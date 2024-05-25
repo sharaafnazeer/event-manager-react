@@ -1,6 +1,9 @@
 import './App.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import RootLayout from './layout';
+import ViewEvent from './components/view-event';
+import CreateForm from './components/create-form';
+import Notfound from './components/not-found';
 
 function App() {
 
@@ -9,7 +12,22 @@ function App() {
     [
       {
         path: "/",
-        element: <RootLayout />
+        element: <RootLayout />,
+        errorElement: <Notfound />,
+        children: [
+          {
+            path: "events/:eventId",
+            element: <ViewEvent />
+          }, 
+          {
+            path: "events/:eventId/edit",
+            element: <CreateForm />
+          },
+          {
+            path: "",
+            element: <CreateForm />
+          }
+        ]
       }
     ]
   );

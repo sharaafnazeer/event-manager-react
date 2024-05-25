@@ -4,14 +4,16 @@ import EventList from '../components/event-list';
 import SearchForm from '../components/search-form';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import CreateForm from '../components/create-form';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const RootLayout = () => {
 
     const [events, setEvents] = useState([]);
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(false);
+    const location = useLocation();
 
     const getEvents = () => {
+        setLoading(true);
         axios.get('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events')
         .then(res => {
             setEvents(res.data);
@@ -27,7 +29,7 @@ const RootLayout = () => {
     useEffect(() => {
         getEvents();
         
-    }, []);
+    }, [location.key, location.pathname]);
 
     const onSearch = (searchKey) => {
 
@@ -48,7 +50,18 @@ const RootLayout = () => {
     }
 
     return (
-        <Container fluid className='container-layout'>
+        <Container className='container-layout'>
+
+            <Row>
+                <Col lg={12}>
+                    <h3 style={{
+                        textAlign: 'center'
+                    }}>Events Manager</h3>
+
+                    <hr></hr>
+                </Col>
+            </Row>
+
             <Row>
                 <Col lg={4} className='search-layout'>
 
@@ -69,7 +82,7 @@ const RootLayout = () => {
                 <Col lg={1}></Col>
                 <Col lg={7} className='content-layout'>
 
-                    <CreateForm />
+                    <Outlet />
 
                 </Col>
             </Row>

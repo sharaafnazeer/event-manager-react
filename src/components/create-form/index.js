@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Form,Row, Col } from 'react-bootstrap';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const initialState = {
     title: '',
@@ -14,16 +15,43 @@ const CreateForm = () => {
 
     const [form, setForm] = useState(initialState)
     const [isLoading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {eventId} = useParams();
+
+    useEffect(() => {
+        const formData = location.state?.eventData;
+
+        if(formData)
+            setForm(formData);
+        else 
+            setForm(initialState);
+
+    }, [location.state]);
 
     const onFormSubmit = async (event) => {
         event.preventDefault();
 
         setLoading(true);
-        const resutls = await axios.post('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events', form);
+        let resutls;
+
+        if(location.pathname === `/events/${eventId}/edit`) {
+            // Update the event
+            resutls = await axios.put('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId, form)
+        } else {
+            // Create the event
+            resutls = await axios.post('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events', form)
+        }
 
         if (resutls.status === 201 || resutls.status ===  200) {
             // Display success
-            setForm(initialState);
+            
+            // Navigate only when creating an event
+            if (location.pathname === "/") {
+                setForm(initialState);
+                navigate("/");
+            }
+
         } else {
             // Display failed
         }
@@ -62,7 +90,9 @@ const CreateForm = () => {
                                 </Form.Group>
                                 <Form.Group className="mb-3" >
                                     <Button type="submit" disabled={isLoading}>
-                                        Save
+                                        {
+                                            location.pathname === `/events/${eventId}/edit` ? 'Update': 'Save'
+                                        }
                                     </Button>
                                 </Form.Group>
                             </Form>

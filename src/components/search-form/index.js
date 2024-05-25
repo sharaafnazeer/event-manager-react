@@ -1,13 +1,18 @@
 import { useRef } from "react";
 import { Col, Form, InputGroup, Row, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const SearchForm = ({onSearchClick}) => {
 
     const searchRef = useRef();
+    const navigate = useNavigate();
 
     const onSearch = () => {
-        console.log('SEARCH VALUE : ' + searchRef.current.value);
         onSearchClick(searchRef.current.value)
+    }
+
+    const addNewClick = () => {
+        navigate('/');
     }
 
     return (
@@ -18,12 +23,12 @@ const SearchForm = ({onSearchClick}) => {
                                         Search
                                     </Form.Label>
                                     <InputGroup className="mb-2">
-                                        <Form.Control id="inlineFormInputGroup" placeholder="Search" ref={searchRef} />
+                                        <Form.Control id="inlineFormInputGroup" placeholder="Search" ref={searchRef} onChange={() => onSearch()}/>
                                     </InputGroup>
                                     </Col>
                                     <Col xs="auto">
-                                    <Button className="mb-2" onClick={() => onSearch()}>
-                                        Search
+                                    <Button className="mb-2" onClick={() => addNewClick()}>
+                                        Add New
                                     </Button>
                                     </Col>
                                 </Row>
