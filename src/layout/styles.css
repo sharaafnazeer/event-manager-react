@@ -1,6 +1,6 @@
 .container-layout {
-    margin-top: 2rem;
-    
+    padding: 2rem;
+    height: 100vh;
 }
 
 .search-layout {

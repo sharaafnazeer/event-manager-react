@@ -1,12 +1,16 @@
-import { Container,Row, Col } from 'react-bootstrap';
+import { Container,Row, Col, Dropdown } from 'react-bootstrap';
 import './styles.css'
 import EventList from '../components/event-list';
 import SearchForm from '../components/search-form';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Outlet, useLocation } from 'react-router-dom';
+import {ThemeContext} from '../hooks/ThemeContext';
 
 const RootLayout = () => {
+
+
+    const {theme, setTheme} = useContext(ThemeContext);
 
     const [events, setEvents] = useState([]);
     const [isLoading, setLoading] = useState(false);
@@ -27,9 +31,10 @@ const RootLayout = () => {
     }
 
     useEffect(() => {
-        getEvents();
+        if (location.state?.loadSideBar || location.state?.loadSideBar === undefined)
+            getEvents();
         
-    }, [location.key, location.pathname]);
+    }, [location.state?.loadSideBar, location.key]);
 
     const onSearch = (searchKey) => {
 
@@ -49,8 +54,32 @@ const RootLayout = () => {
         
     }
 
+    const onSelectTheme = (theme) => {
+        setTheme(theme)
+    }
+
     return (
-        <Container className='container-layout'>
+        <Container fluid className='container-layout' style={{
+            backgroundColor: theme === 'dark' ? '#878787' : theme === 'light' ? '#E3E3E3' : '#6F7992'
+        }}>
+
+            <Row>
+                <Col lg={12}>
+
+                    <Dropdown>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        Select Theme
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => onSelectTheme('light')}>Light</Dropdown.Item>
+                        <Dropdown.Item onClick={() => onSelectTheme('dark')}>Dark</Dropdown.Item>
+                        <Dropdown.Item onClick={() => onSelectTheme('primary')}>Primary</Dropdown.Item>
+                    </Dropdown.Menu>
+                    </Dropdown>
+                </Col>
+
+            </Row>
 
             <Row>
                 <Col lg={12}>

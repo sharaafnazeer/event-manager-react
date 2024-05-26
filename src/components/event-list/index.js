@@ -1,16 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ListGroup, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const EventList = ({events = [], isLoading}) => {
 
     const navigate = useNavigate();
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.pathname === "/") {
+            setSelectedEvent(null);
+        }
+    }, [location.pathname]);
 
 
     const onSelectEvent = (e) => {
         setSelectedEvent(e.target.id);
-        navigate('/events/' + e.target.id);
+        navigate('/events/' + e.target.id, {state: {loadSideBar: false}});
     }
 
 

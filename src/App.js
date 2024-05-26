@@ -4,6 +4,9 @@ import RootLayout from './layout';
 import ViewEvent from './components/view-event';
 import CreateForm from './components/create-form';
 import Notfound from './components/not-found';
+import {ThemeProvider} from './hooks/ThemeContext'
+
+//const ThemeContext = useContext();
 
 function App() {
 
@@ -34,9 +37,13 @@ function App() {
 
   return (
     <div>
-      <RouterProvider router={router}/>
+      <ThemeProvider>
+        <RouterProvider router={router}/>
+      </ThemeProvider>
     </div>
   );
 }
 
 export default App;
+
+// useContext

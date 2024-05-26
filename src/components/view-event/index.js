@@ -15,10 +15,11 @@ const ViewEvent = () => {
     const {eventId} = useParams();
     const navigate = useNavigate();
     const [event, setEvent] = useState(initialState);
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
 
+        setLoading(true);
         axios.get('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId)
         .then(res => {
             setEvent(res.data)
@@ -36,14 +37,14 @@ const ViewEvent = () => {
         const results = await axios.delete('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId);
         if (results.status === 200) {
             // Display success
-            navigate("/");
+            navigate("/", {state: {loadSideBar: true}});
         } else {
             // Display failed
         }
     }
 
     const onEditEvent = () => {
-        navigate("/events/" + eventId + "/edit", {state: {eventData: event}});
+        navigate("/events/" + eventId + "/edit", {state: {eventData: event, loadSideBar: false}});
     }
 
 

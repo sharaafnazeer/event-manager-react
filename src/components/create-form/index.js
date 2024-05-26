@@ -49,7 +49,9 @@ const CreateForm = () => {
             // Navigate only when creating an event
             if (location.pathname === "/") {
                 setForm(initialState);
-                navigate("/");
+                navigate("/", { state: {loadSideBar: true}});
+            } else {
+                navigate(location.pathname, { state: {loadSideBar: true, eventData: form}});
             }
 
         } else {

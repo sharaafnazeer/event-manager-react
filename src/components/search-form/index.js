@@ -12,7 +12,7 @@ const SearchForm = ({onSearchClick}) => {
     }
 
     const addNewClick = () => {
-        navigate('/');
+        navigate('/', {state: {loadSideBar: true}});
     }
 
     return (
