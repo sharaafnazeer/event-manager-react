@@ -6,50 +6,47 @@ import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Outlet, useLocation } from 'react-router-dom';
 import {ThemeContext} from '../hooks/ThemeContext';
+import {useDispatch, useSelector} from 'react-redux'
+import {selectEvents, searchEvents, clearFilteredEvents} from '../redux/slices/eventSlice'
 
 const RootLayout = () => {
 
 
     const {theme, setTheme} = useContext(ThemeContext);
-
-    const [events, setEvents] = useState([]);
+    const events = useSelector((state) => state.eventState.events);
+    const filteredEvents = useSelector((state) => state.eventState.filteredEvents);
     const [isLoading, setLoading] = useState(false);
     const location = useLocation();
 
+    const dispatch = useDispatch();
+    
+
     const getEvents = () => {
-        setLoading(true);
-        axios.get('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events')
-        .then(res => {
-            setEvents(res.data);
-        })
-        .catch(err => {
-            setEvents([]);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+        // setLoading(true);
+        //axios.get('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events')
+        //.then(res => {
+           // setEvents(res.data);
+        //})
+        //.catch(err => {
+           // setEvents([]);
+        //})
+        //.finally(() => {
+         //   setLoading(false);
+        //});
     }
 
     useEffect(() => {
-        if (location.state?.loadSideBar || location.state?.loadSideBar === undefined)
-            getEvents();
+       if (location.state?.loadSideBar || location.state?.loadSideBar === undefined)
+         getEvents();
         
-    }, [location.state?.loadSideBar, location.key]);
+    }, [location.state?.loadSideBar, location.key, dispatch]);
 
     const onSearch = (searchKey) => {
 
         if(searchKey) {
-            const filteredEvents = events.map(event => {
-                return {
-                    ...event,
-                    titleSmall: event.title.toLowerCase()
-                }
-            }).filter(event => event.titleSmall.includes(searchKey.toLowerCase()));
-    
-            setEvents(filteredEvents);
+            dispatch(searchEvents({searchKey}));
         } else {
-            setLoading(true);
-            getEvents();
+            dispatch(clearFilteredEvents());
         }
         
     }
@@ -102,7 +99,7 @@ const RootLayout = () => {
                         <Col lg={12}><hr/></Col>
 
                         <Col lg={12}>
-                            <EventList events={events} isLoading={isLoading}/>
+                            <EventList events={filteredEvents.length > 0 ? filteredEvents :events} isLoading={isLoading}/>
                         </Col>
                     </Row>
 

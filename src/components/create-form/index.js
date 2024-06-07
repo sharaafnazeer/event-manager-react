@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Button, Form,Row, Col } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { createEvent, updateEvent } from '../../redux/slices/eventSlice';
 
 const initialState = {
     title: '',
@@ -18,6 +20,7 @@ const CreateForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const {eventId} = useParams();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const formData = location.state?.eventData;
@@ -32,33 +35,40 @@ const CreateForm = () => {
     const onFormSubmit = async (event) => {
         event.preventDefault();
 
-        setLoading(true);
+        //setLoading(true);
         let resutls;
 
         if(location.pathname === `/events/${eventId}/edit`) {
             // Update the event
-            resutls = await axios.put('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId, form)
+            //resutls = await axios.put('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId, form)
+            
+            dispatch(updateEvent({event: form, eventId: eventId}))
+
         } else {
             // Create the event
-            resutls = await axios.post('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events', form)
+            //resutls = await axios.post('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events', form)
+
+            dispatch(createEvent({event: form}));
+            setForm(initialState);
+            
         }
 
-        if (resutls.status === 201 || resutls.status ===  200) {
+        //if (resutls.status === 201 || resutls.status ===  200) {
             // Display success
             
             // Navigate only when creating an event
-            if (location.pathname === "/") {
-                setForm(initialState);
-                navigate("/", { state: {loadSideBar: true}});
-            } else {
-                navigate(location.pathname, { state: {loadSideBar: true, eventData: form}});
-            }
+        //    if (location.pathname === "/") {
+          //      setForm(initialState);
+           //     navigate("/", { state: {loadSideBar: true}});
+           // } else {
+             //   navigate(location.pathname, { state: {loadSideBar: true, eventData: form}});
+            //}
 
-        } else {
+        //} else {
             // Display failed
-        }
+        //}
 
-        setLoading(false);
+        //setLoading(false);
     }
 
     const onInputChange = (event) => {

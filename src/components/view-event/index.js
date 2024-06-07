@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { deleteEvent, selectEvent } from '../../redux/slices/eventSlice'
 
 const initialState = {
     title: '',
@@ -14,33 +16,39 @@ const ViewEvent = () => {
 
     const {eventId} = useParams();
     const navigate = useNavigate();
-    const [event, setEvent] = useState(initialState);
+    const event = useSelector(state => state.eventState.selectedEvent)
     const [isLoading, setLoading] = useState(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
 
-        setLoading(true);
-        axios.get('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId)
-        .then(res => {
-            setEvent(res.data)
-        })
-        .catch(err => {
-            setEvent(initialState);
-        })
-        .finally(() => {
-            setLoading(false);
-        })
+        //setLoading(true);
+        //axios.get('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId)
+        //.then(res => {
+        //    setEvent(res.data)
+        //})
+        //.catch(err => {
+        //    setEvent(initialState);
+        //})
+        //.finally(() => {
+        //    setLoading(false);
+        //})
 
-    }, [eventId]);
+        dispatch(selectEvent({eventId: eventId}))
+
+    }, [eventId, dispatch]);
 
     const onDeleteEvent = async () => {
-        const results = await axios.delete('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId);
-        if (results.status === 200) {
+        //const results = await axios.delete('https://664f2923fafad45dfae299c4.mockapi.io/api/v1/events/' + eventId);
+        //if (results.status === 200) {
             // Display success
-            navigate("/", {state: {loadSideBar: true}});
-        } else {
+            //navigate("/", {state: {loadSideBar: true}});
+        //} else {
             // Display failed
-        }
+        //}
+
+        dispatch(deleteEvent({eventId: eventId}));
+        navigate("/", {state: {loadSideBar: true}});
     }
 
     const onEditEvent = () => {
@@ -64,20 +72,20 @@ const ViewEvent = () => {
 
                     <Col lg={12}>
 
-                        <h3>{event.title}</h3>
+                        <h3>{ event && event.title}</h3>
                     </Col>
 
                     <Col lg={12}>
-                        Date & Time : {event.date}
+                        Date & Time : {event && event.date}
                     </Col>
 
                     <Col lg={12}>
 
-                        Venue: {event.venue}
+                        Venue: {event && event.venue}
                     </Col>
 
                     <Col lg={12}>
-                        Notes: {event.notes}
+                        Notes: {event && event.notes}
                     </Col>
 
                     <Col lg={12}>
